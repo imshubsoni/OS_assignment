@@ -120,5 +120,78 @@ bool getSafeSeq();
 		
 		// free availableResources
 	        free(availableResources);
+		        for(i=0; i<numberOfProcesses; i++) {
+	                free(numberOfAllocatedResources[i]);
+	                free(numberOfMaximumRequiredResources[i]);
+			free(neededResources[i]);
+	        }
+	        free(numberOfAllocatedResources);
+	        free(numberOfMaximumRequiredResources);
+		free(neededResources);
+	        free(processSafeSequence);
+	}
+	
+
+	
+
+	bool getSafeSeq() {
+		// get safe sequence
+	        int tempRes[numberOfResources];
+	        for(i=0; i<numberOfResources; i++) tempRes[i] = availableResources[i];
+	
+
+	        bool finished[numberOfProcesses];
+	        for(i=0; i<numberOfProcesses; i++) finished[i] = false;
+	        int nfinished=0;
+	        while(nfinished < numberOfProcesses) {
+	                bool safe = false;
+	
+
+	                for(i=0; i<numberOfProcesses; i++) {
+	                        if(!finished[i]) {
+	                                bool possible = true;
+	
+
+	                                for(j=0; j<numberOfResources; j++)
+	                                        if(neededResources[i][j] > tempRes[j]) {
+	                                                possible = false;
+	                                                break;
+	                                        }
+	
+
+	                                if(possible) {
+	                                        for(j=0; j<numberOfResources; j++)
+	                                                tempRes[j] += numberOfAllocatedResources[i][j];
+	                                        processSafeSequence[nfinished] = i;
+	                                        finished[i] = true;
+	                                        ++nfinished;
+	                                        safe = true;
+	                                }
+	                        }
+	                }
+	
+
+	                if(!safe) {
+	                        for(k=0; k<numberOfProcesses; k++) processSafeSequence[k] = -1;
+	                        return false; // no safe sequence found
+	                }
+	        }
+	        return true; // safe sequence found
+	}
+	
+
+	// process code
+	void* processCode(void *arg) {
+	        int p = *((int *) arg);
+	
+
+		// lock availableResources
+	        pthread_mutex_lock(&lockResources);
+	
+
+	        // condition check
+	        while(p != processSafeSequence[processRanN])
+
+			
 
 			
