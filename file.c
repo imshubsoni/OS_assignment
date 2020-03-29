@@ -86,4 +86,39 @@ bool getSafeSeq();
 	        if(!getSafeSeq()) {
 					printf("This is an unsafe process or unsafe state, kindly check again Once. thnak you.");
 	                exit(-1);
+		        }
+	
+
+	        printf("\n Yeah!! Congratulations \n Safe Sequence is there for processes \n and that safe sequence is --> ");
+	        for(i=0; i<numberOfProcesses; i++) {
+	                printf("%-3d", processSafeSequence[i]+1);
+	        }
+	
+
+	        printf("\nNow let's just see how process executes -->\n");
+	        sleep(1);
+		
+		// run threads
+		pthread_t processes[numberOfProcesses];
+	        pthread_attr_t attr;
+	        pthread_attr_init(&attr);
+	
+
+		int processNumber[numberOfProcesses];
+		for(i=0; i<numberOfProcesses; i++) processNumber[i] = i;
+	
+
+	        for(i=0; i<numberOfProcesses; i++)
+	                pthread_create(&processes[i], &attr, processCode, (void *)(&processNumber[i]));
+	
+
+	        for(i=0; i<numberOfProcesses; i++)
+	                pthread_join(processes[i], NULL);
+	
+
+	        printf("\n..................CONGRATULATIONS.....................\n.....All Processes Have been Finished.....\n");	
+		
+		// free availableResources
+	        free(availableResources);
+
 			
