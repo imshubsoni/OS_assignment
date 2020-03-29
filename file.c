@@ -191,6 +191,63 @@ bool getSafeSeq();
 
 	        // condition check
 	        while(p != processSafeSequence[processRanN])
+			                pthread_cond_wait(&condition, &lockResources);
+	
+
+		// process
+	        printf("\n#### Process Number %d  ####", p+1);
+	        printf("\n\tNumber of Allocated Resources : ");
+	        for(i=0; i<numberOfResources; i++)
+	                printf("%3d", numberOfAllocatedResources[p][i]);
+	
+
+	        printf("\n\tNumber of Needed Resources   : ");
+	        for(i=0; i<numberOfResources; i++)
+	                printf("%3d", neededResources[p][i]);
+	
+
+	        printf("\n\tNumber of Available Resources : ");
+	        for(i=0; i<numberOfResources; i++)
+	                printf("%3d", availableResources[i]);
+	
+
+	        printf("\n"); sleep(1);
+	
+
+	        printf("\tResource have been allocated to the process!");
+	        printf("\n"); 
+			sleep(1);
+	        printf("\tprocess is now running the code\n let's just wait........");
+	        printf("\n"); 
+			sleep(rand()%3 + 2); // process code
+	        printf("\tprocess now completed the code");
+	        printf("\n"); 
+			sleep(1);
+	        printf("\tProcess is now releasing all allocated resource\n let's just wait ........");
+	        printf("\n"); 
+			sleep(1);
+	        printf("\tAll resources released by the process");
+	
+
+		for(i=0; i<numberOfResources; i++)
+	                availableResources[i] += numberOfAllocatedResources[p][i];
+	
+
+	        printf("\n\tAvailable resources with us now : ");
+	        for(i=0; i<numberOfResources; i++)
+	                printf("%3d", availableResources[i]);
+	        printf("\n\n");
+	
+
+	        sleep(1);
+	
+
+		// Broadcating the conditions -->
+	        processRanN++;
+	        pthread_cond_broadcast(&condition);
+	        pthread_mutex_unlock(&lockResources);
+		pthread_exit(NULL);
+	}
 
 			
 
